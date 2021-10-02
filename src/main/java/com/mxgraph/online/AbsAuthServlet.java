@@ -319,11 +319,11 @@ abstract public class AbsAuthServlet extends HttpServlet
 				writer.flush();
 				writer.close();
 
-				log.log(Level.ERROR, "Unauthorized");
+				log.log(Level.WARNING, "Unauthorized");
 			}
 			else if ((code == null && refreshToken == null) || client == null || redirectUri == null || secret == null)
 			{
-				log.log(Level.ERROR, "Something was null that shouldn't be");
+				log.log(Level.WARNING, "Something was null that shouldn't be");
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			}
 			//Non GAE runtimes are excluded from state check. TODO Change GAE stub to return null from CacheFactory
