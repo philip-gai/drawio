@@ -498,8 +498,7 @@ abstract public class AbsAuthServlet extends HttpServlet
 					jsonResponse = true;
 				}
 			}
-			
-			log.info("Sending POST with params" + urlParameters.toString());
+			log.info("Sending POST");
 
 			// Send post request
 			con.setDoOutput(true);
