@@ -20,6 +20,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
+          
+      - name: Replace tokens
+        uses: cschleiden/replace-tokens@v1.1
+        with:
+          files: '["**/WEB-INF/**"]'
 
       - name: Build war with Ant
         run: |
