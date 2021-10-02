@@ -40,7 +40,7 @@ GitHubClient.prototype.baseUrl = DRAWIO_GITHUB_API_URL;
 
 GitHubClient.prototype.baseHostUrl = DRAWIO_GITHUB_URL;
 
-GitHubClient.prototype.redirectUri = window.location.protocol + '//' + window.location.host + '/github2';
+GitHubClient.prototype.redirectUri = 'https://app.diagrams.net/github2';
 
 /**
  * Maximum file size of the GitHub REST API.
