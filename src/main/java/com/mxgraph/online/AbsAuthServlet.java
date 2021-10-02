@@ -282,7 +282,8 @@ abstract public class AbsAuthServlet extends HttpServlet
 
 			Config CONFIG = getConfig();
 			redirectUri = CONFIG.getRedirectUrl(domain != null? domain : request.getServerName());
-			
+			log.log(Level.INFO, "redirectUri=" + redirectUri);
+
 			secret = CONFIG.getClientSecret(client);
 			
 			String tokenCookie = TOKEN_COOKIE + client; //Such that we support multiple client ids
@@ -301,6 +302,7 @@ abstract public class AbsAuthServlet extends HttpServlet
 			
 			if ("1".equals(logoutParam))
 			{
+				log.log(Level.INFO, "Logging out");
 				logout(tokenCookie, tokenCookieVal, request, response);
 			}
 			else if (error != null)
@@ -316,9 +318,12 @@ abstract public class AbsAuthServlet extends HttpServlet
 	
 				writer.flush();
 				writer.close();
+
+				log.log(Level.ERROR, "Unauthorized");
 			}
 			else if ((code == null && refreshToken == null) || client == null || redirectUri == null || secret == null)
 			{
+				log.log(Level.ERROR, "Something was null that shouldn't be");
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			}
 			//Non GAE runtimes are excluded from state check. TODO Change GAE stub to return null from CacheFactory
@@ -329,12 +334,15 @@ abstract public class AbsAuthServlet extends HttpServlet
 			}
 			else
 			{
+				log.log(Level.INFO, "Contacting OAuth server");
 				Response authResp = contactOAuthServer(CONFIG.AUTH_SERVICE_URL, code, refreshToken, secret, client, redirectUri, successRedirect != null, 1);
 				
+				log.log(Level.INFO, "Auth response=" + authResp.content);
 				response.setStatus(authResp.status);
 				
 				if (authResp.refreshToken != null)
 				{
+					log.log(Level.INFO, "Adding refresh token cookie");
 					addCookie(tokenCookie, getRefreshTokenCookie(authResp.refreshToken, tokenCookieVal, authResp.accessToken), TOKEN_COOKIE_AGE, response);
 				}
 				
@@ -342,7 +350,10 @@ abstract public class AbsAuthServlet extends HttpServlet
 				{
 					if (successRedirect != null)
 					{
-						response.sendRedirect(successRedirect + "#" + Utils.encodeURIComponent(authResp.content, "UTF-8"));
+						String redirectWithRef = successRedirect + "#"
+								+ Utils.encodeURIComponent(authResp.content, "UTF-8");
+						log.log(Level.INFO, "Redirecting to" + redirectWithRef);
+						response.sendRedirect(redirectWithRef);
 					}
 					else
 					{
