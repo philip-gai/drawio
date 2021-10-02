@@ -424,6 +424,7 @@ abstract public class AbsAuthServlet extends HttpServlet
 		try
 		{
 			URL obj = new URL(authSrvUrl);
+			log.info("opening connection to authSrvUrl=" + authSrvUrl);
 			con = (HttpURLConnection) obj.openConnection();
 
 			con.setRequestMethod("POST");
@@ -498,6 +499,8 @@ abstract public class AbsAuthServlet extends HttpServlet
 				}
 			}
 			
+			log.info("Sending POST with params" + urlParameters.toString());
+
 			// Send post request
 			con.setDoOutput(true);
 			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
@@ -517,12 +520,17 @@ abstract public class AbsAuthServlet extends HttpServlet
 			in.close();
 
 			response.status = con.getResponseCode();
-			
+
 			Gson gson = new Gson();
 		    
+			log.info("Raw response: " + authRes.toString());
+			log.info("Creating json");
 			JsonObject json = gson.fromJson(authRes.toString(), JsonElement.class).getAsJsonObject();
+			log.info("Getting access token");
 			String accessToken = getAccessToken(json);
+			log.info("Getting expires in");
 			int expiresIn = getExpiresIn(json);
+			log.info("Getting refresh token");
 			response.refreshToken = getRefreshToken(json);
 			response.accessToken = accessToken;
 			
@@ -546,6 +554,7 @@ abstract public class AbsAuthServlet extends HttpServlet
 		}
 		catch(IOException e)
 		{
+			log.warning("IOException: " + e.getMessage());
 			StringBuilder details = new StringBuilder("");
 			
 			if (con != null)
@@ -570,13 +579,17 @@ abstract public class AbsAuthServlet extends HttpServlet
 					// Ignore
 				}
 			}
-			
+
+			log.warning("Details=" + details.toString());
+
 			if (e.getMessage() != null && e.getMessage().contains("401"))
 			{
+				log.warning("Unauthorized: " + e.getMessage());
 				response.status = HttpServletResponse.SC_UNAUTHORIZED;
 			}
 			else if (retryCount > 0 && e.getMessage() != null && e.getMessage().contains("Connection timed out"))
 		    {
+				log.warning("Timed out, trying again: " + e.getMessage());
 				return contactOAuthServer(authSrvUrl, code, refreshToken, secret,
 						client, redirectUri, directResp, --retryCount);
 		    }
