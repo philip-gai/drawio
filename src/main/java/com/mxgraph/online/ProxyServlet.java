@@ -87,7 +87,7 @@ public class ProxyServlet extends HttpServlet
 				response.setHeader("Cache-Control", "private, max-age=86400");
 
 				// Workaround for 451 response from Iconfinder CDN
-				connection.setRequestProperty("User-Agent", "draw.io");
+				connection.setRequestProperty("User-Agent", "drawio.azurewebsites.net");
 				
 				//Forward auth header
 				if (auth  !=  null)
@@ -122,7 +122,7 @@ public class ProxyServlet extends HttpServlet
 						connection.setReadTimeout(TIMEOUT);
 
 						// Workaround for 451 response from Iconfinder CDN
-						connection.setRequestProperty("User-Agent", "draw.io");
+						connection.setRequestProperty("User-Agent", "drawio.azurewebsites.net");
 						status = ((HttpURLConnection) connection)
 								.getResponseCode();
 					}
