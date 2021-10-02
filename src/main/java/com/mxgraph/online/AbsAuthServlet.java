@@ -219,9 +219,14 @@ abstract public class AbsAuthServlet extends HttpServlet
 			out.close();
 			return;
 		}
-		
+
+		log.info("Getting code and error...");
+
 		String code = request.getParameter("code");
 		String error = request.getParameter("error");
+
+		log.info("code=" + code + ",error=" + error);
+
 		HashMap<String, String> stateVars = new HashMap<>();
 		String secret = null, client = null, redirectUri = null, domain = null, stateToken = null, cookieToken = null, version = null, successRedirect = null;
 		
@@ -247,6 +252,9 @@ abstract public class AbsAuthServlet extends HttpServlet
 				stateToken = stateVars.get("token");
 				version = stateVars.get("ver");
 				successRedirect = stateVars.get("redirect");
+
+				log.log(Level.INFO, "domain=" + domain + ",client=" + client + ",stateToken=" + stateToken + ",version="
+						+ version + "successRedirect=" + successRedirect);
 
 				//Redirect to a page on the same domain only (relative path) TODO Is this enough?
 				if (successRedirect != null && successRedirect.toLowerCase().startsWith("http"))
