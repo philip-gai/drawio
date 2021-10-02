@@ -25,6 +25,8 @@ jobs:
         uses: cschleiden/replace-tokens@v1.1
         with:
           files: '["**/WEB-INF/**"]'
+        env:
+          GITHUBAPP_CLIENT_SECRET: ${{ secrets.GITHUBAPP_CLIENT_SECRET }}
 
       - name: Build war with Ant
         run: |
