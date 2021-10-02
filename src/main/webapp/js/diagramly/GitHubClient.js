@@ -24,11 +24,6 @@ mxUtils.extend(GitHubClient, DrawioClient);
 GitHubClient.prototype.clientId = (window.location.hostname == 'test.draw.io') ? '23bc97120b9035515661' : window.DRAWIO_GITHUB_ID;
 
 /**
- * OAuth scope.
- */
-GitHubClient.prototype.scope = 'repo';
-
-/**
  * Default extension for new files.
  */
 GitHubClient.prototype.extension = '.drawio';
@@ -153,7 +148,7 @@ GitHubClient.prototype.authenticateStep2 = function(state, success, error)
 			this.ui.showAuthDialog(this, true, mxUtils.bind(this, function(remember, authSuccess)
 			{
 				var win = window.open(this.baseHostUrl + '/login/oauth/authorize?client_id=' +
-					this.clientId + '&scope=' + this.scope + 
+					this.clientId +
 					'&state=' + encodeURIComponent('cId=' + this.clientId + //To identify which app/domain is used
 						'&domain=' + window.location.hostname + '&token=' + state), 'ghauth');
 				
